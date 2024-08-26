@@ -21,7 +21,7 @@ The free Discord client mod
 
 ## Installing / Uninstalling
 
-Visit [vencord.dev/download](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
+Visit [freedomcord.sex/download](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
 ## Disclaimer
 
 Discord is trademark of Discord Inc. and solely mentioned for the sake of descriptivity.
