@@ -16,31 +16,28 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Clipboard } from "@webpack/common";
-
-import { cl } from "../utils/misc";
-import { CopyButton } from "./CopyButton";
-
+import {Clipboard} from '@webpack/common'
+import {cl} from '../utils/misc'
+import {CopyButton} from './CopyButton'
 export interface ButtonRowProps {
-    theme: import("./Highlighter").ThemeBase;
-    content: string;
+     theme: import('./Highlighter').ThemeBase;
+     content: string;
 }
 
-export function ButtonRow({ content, theme }: ButtonRowProps) {
-    const buttons: JSX.Element[] = [];
+export function ButtonRow({content, theme}: ButtonRowProps) {
+     const buttons: JSX.Element[] = []
+     if (Clipboard.SUPPORTS_COPY) {
+          buttons.push(
+               <CopyButton
+                    content={content}
+                    className={cl('btn')}
+                    style={{
+                         backgroundColor: theme.accentBgColor,
+                         color: theme.accentFgColor,
+                    }}
+               />
+          )
+     }
 
-    if (Clipboard.SUPPORTS_COPY) {
-        buttons.push(
-            <CopyButton
-                content={content}
-                className={cl("btn")}
-                style={{
-                    backgroundColor: theme.accentBgColor,
-                    color: theme.accentFgColor,
-                }}
-            />
-        );
-    }
-
-    return <div className={cl("btns")}>{buttons}</div>;
+     return <div className={cl('btns')}>{buttons}</div>
 }

@@ -16,60 +16,58 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { definePluginSettings } from "@api/Settings";
-import { Flex } from "@components/Flex";
-import { Devs } from "@utils/constants";
-import definePlugin, { OptionType } from "@utils/types";
-import { RelationshipStore } from "@webpack/common";
-import { User } from "discord-types/general";
-
+import {definePluginSettings} from '@api/Settings'
+import {Flex} from '@components/Flex'
+import {Devs} from '@utils/constants'
+import definePlugin, {OptionType} from '@utils/types'
+import {RelationshipStore} from '@webpack/common'
+import {User} from 'discord-types/general'
 const settings = definePluginSettings({
-    showDates: {
-        type: OptionType.BOOLEAN,
-        description: "Show dates on friend requests",
-        default: false,
-        restartNeeded: true
-    }
-});
-
+     showDates: {
+          type: OptionType.BOOLEAN,
+          description: 'Show dates on friend requests',
+          default: false,
+          restartNeeded: true
+     }
+})
 export default definePlugin({
-    name: "SortFriendRequests",
-    authors: [Devs.Megu],
-    description: "Sorts friend requests by date of receipt",
-    settings,
+     name: 'SortFriendRequests',
+     authors: [Devs.Megu],
+     description: 'Sorts friend requests by date of receipt',
+     settings,
 
-    patches: [{
-        find: "getRelationshipCounts(){",
-        replacement: {
-            match: /\}\)\.sortBy\((.+?)\)\.value\(\)/,
-            replace: "}).sortBy(row => $self.wrapSort(($1), row)).value()"
-        }
-    }, {
-        find: ".Messages.FRIEND_REQUEST_CANCEL",
-        replacement: {
-            predicate: () => settings.store.showDates,
-            match: /subText:(\i)(?<=user:(\i).+?)/,
-            replace: (_, subtext, user) => `subText:$self.makeSubtext(${subtext},${user})`
-        }
-    }],
+     patches: [{
+          find: 'getRelationshipCounts(){',
+          replacement: {
+               match: /\}\)\.sortBy\((.+?)\)\.value\(\)/,
+               replace: '}).sortBy(row => $self.wrapSort(($1), row)).value()'
+          }
+     }, {
+          find: '.Messages.FRIEND_REQUEST_CANCEL',
+          replacement: {
+               predicate: () => settings.store.showDates,
+               match: /subText:(\i)(?<=user:(\i).+?)/,
+               replace: (_, subtext, user) => `subText:$self.makeSubtext(${subtext},${user})`
+          }
+     }],
 
-    wrapSort(comparator: Function, row: any) {
-        return row.type === 3 || row.type === 4
-            ? -this.getSince(row.user)
-            : comparator(row);
-    },
+     wrapSort(comparator: Function, row: any) {
+          return row.type === 3 || row.type === 4
+               ? -this.getSince(row.user)
+               : comparator(row)
+     },
 
-    getSince(user: User) {
-        return new Date(RelationshipStore.getSince(user.id));
-    },
+     getSince(user: User) {
+          return new Date(RelationshipStore.getSince(user.id))
+     },
 
-    makeSubtext(text: string, user: User) {
-        const since = this.getSince(user);
-        return (
-            <Flex flexDirection="column" style={{ gap: 0, flexWrap: "wrap", lineHeight: "0.9rem" }}>
-                <span>{text}</span>
-                {!isNaN(since.getTime()) && <span>Received &mdash; {since.toDateString()}</span>}
-            </Flex>
-        );
-    }
-});
+     makeSubtext(text: string, user: User) {
+          const since = this.getSince(user)
+          return (
+               <Flex flexDirection='column' style={{gap: 0, flexWrap: 'wrap', lineHeight: '0.9rem'}}>
+                    <span>{text}</span>
+                    {!isNaN(since.getTime()) && <span>Received &mdash; {since.toDateString()}</span>}
+               </Flex>
+          )
+     }
+})

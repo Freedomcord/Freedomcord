@@ -16,68 +16,64 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import "./shiki.css";
-
-import { enableStyle } from "@api/Styles";
-import { Devs } from "@utils/constants";
-import definePlugin, { ReporterTestable } from "@utils/types";
-import previewExampleText from "file://previewExample.tsx";
-
-import { shiki } from "./api/shiki";
-import { createHighlighter } from "./components/Highlighter";
-import deviconStyle from "./devicon.css?managed";
-import { settings } from "./settings";
-import { DeviconSetting } from "./types";
-import { clearStyles } from "./utils/createStyle";
-
+import './shiki.css'
+import {enableStyle} from '@api/Styles'
+import {Devs} from '@utils/constants'
+import definePlugin, {ReporterTestable} from '@utils/types'
+import previewExampleText from 'file://previewExample.tsx'
+import {shiki} from './api/shiki'
+import {createHighlighter} from './components/Highlighter'
+import deviconStyle from './devicon.css?managed'
+import {settings} from './settings'
+import {DeviconSetting} from './types'
+import {clearStyles} from './utils/createStyle'
 export default definePlugin({
-    name: "ShikiCodeblocks",
-    description: "Brings vscode-style codeblocks into Discord, powered by Shiki",
-    authors: [Devs.Vap],
-    reporterTestable: ReporterTestable.Patches,
-    settings,
+     name: 'ShikiCodeblocks',
+     description: 'Brings vscode-style codeblocks into Discord, powered by Shiki',
+     authors: [Devs.Vap],
+     reporterTestable: ReporterTestable.Patches,
+     settings,
 
-    patches: [
-        {
-            find: "codeBlock:{react(",
-            replacement: {
-                match: /codeBlock:\{react\((\i),(\i),(\i)\)\{/,
-                replace: "$&return $self.renderHighlighter($1,$2,$3);"
-            }
-        },
-        {
-            find: ".PREVIEW_NUM_LINES",
-            replacement: {
-                match: /(?<=function \i\((\i)\)\{)(?=let\{text:\i,language:)/,
-                replace: "return $self.renderHighlighter({lang:$1.language,content:$1.text});"
-            }
-        }
-    ],
-    start: async () => {
-        if (settings.store.useDevIcon !== DeviconSetting.Disabled)
-            enableStyle(deviconStyle);
+     patches: [
+          {
+               find: 'codeBlock:{react(',
+               replacement: {
+                    match: /codeBlock:\{react\((\i),(\i),(\i)\)\{/,
+                    replace: '$&return $self.renderHighlighter($1,$2,$3);'
+               }
+          },
+          {
+               find: '.PREVIEW_NUM_LINES',
+               replacement: {
+                    match: /(?<=function \i\((\i)\)\{)(?=let\{text:\i,language:)/,
+                    replace: 'return $self.renderHighlighter({lang:$1.language,content:$1.text});'
+               }
+          }
+     ],
+     start: async () => {
+          if (settings.store.useDevIcon !== DeviconSetting.Disabled)
+               enableStyle(deviconStyle)
+          await shiki.init(settings.store.customTheme || settings.store.theme)
+     },
+     stop: () => {
+          shiki.destroy()
+          clearStyles()
+     },
+     settingsAboutComponent: ({tempSettings}) => createHighlighter({
+          lang: 'tsx',
+          content: previewExampleText,
+          isPreview: true,
+          tempSettings,
+     }),
 
-        await shiki.init(settings.store.customTheme || settings.store.theme);
-    },
-    stop: () => {
-        shiki.destroy();
-        clearStyles();
-    },
-    settingsAboutComponent: ({ tempSettings }) => createHighlighter({
-        lang: "tsx",
-        content: previewExampleText,
-        isPreview: true,
-        tempSettings,
-    }),
-
-    // exports
-    shiki,
-    createHighlighter,
-    renderHighlighter: ({ lang, content }: { lang: string; content: string; }) => {
-        return createHighlighter({
-            lang: lang?.toLowerCase(),
-            content,
-            isPreview: false,
-        });
-    },
-});
+     //exports
+     shiki,
+     createHighlighter,
+     renderHighlighter: ({lang, content}: {lang: string; content: string;}) => {
+          return createHighlighter({
+               lang: lang?.toLowerCase(),
+               content,
+               isPreview: false,
+          })
+     },
+})

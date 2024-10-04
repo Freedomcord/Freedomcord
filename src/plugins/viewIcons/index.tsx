@@ -16,213 +16,200 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { NavContextMenuPatchCallback } from "@api/ContextMenu";
-import { definePluginSettings } from "@api/Settings";
-import { ImageIcon } from "@components/Icons";
-import { Devs } from "@utils/constants";
-import { openImageModal } from "@utils/discord";
-import definePlugin, { OptionType } from "@utils/types";
-import { GuildMemberStore, IconUtils, Menu } from "@webpack/common";
-import type { Channel, Guild, User } from "discord-types/general";
-
-
+import {NavContextMenuPatchCallback} from '@api/ContextMenu'
+import {definePluginSettings} from '@api/Settings'
+import {ImageIcon} from '@components/Icons'
+import {Devs} from '@utils/constants'
+import {openImageModal} from '@utils/discord'
+import definePlugin, {OptionType} from '@utils/types'
+import {GuildMemberStore, IconUtils, Menu} from '@webpack/common'
+import type {Channel, Guild, User} from 'discord-types/general'
 interface UserContextProps {
-    channel: Channel;
-    guildId?: string;
-    user: User;
+     channel: Channel;
+     guildId?: string;
+     user: User;
 }
 
 interface GuildContextProps {
-    guild?: Guild;
+     guild?: Guild;
 }
 
 interface GroupDMContextProps {
-    channel: Channel;
+     channel: Channel;
 }
 
 const settings = definePluginSettings({
-    format: {
-        type: OptionType.SELECT,
-        description: "Choose the image format to use for non animated images. Animated images will always use .gif",
-        options: [
-            {
-                label: "webp",
-                value: "webp",
-                default: true
-            },
-            {
-                label: "png",
-                value: "png",
-            },
-            {
-                label: "jpg",
-                value: "jpg",
-            }
-        ]
-    },
-    imgSize: {
-        type: OptionType.SELECT,
-        description: "The image size to use",
-        options: ["128", "256", "512", "1024", "2048", "4096"].map(n => ({ label: n, value: n, default: n === "1024" }))
-    }
-});
-
+     format: {
+          type: OptionType.SELECT,
+          description: 'Choose the image format to use for non animated images. Animated images will always use .gif',
+          options: [
+               {
+                    label: 'webp',
+                    value: 'webp',
+                    default: true
+               },
+               {
+                    label: 'png',
+                    value: 'png',
+               },
+               {
+                    label: 'jpg',
+                    value: 'jpg',
+               }
+          ]
+     },
+     imgSize: {
+          type: OptionType.SELECT,
+          description: 'The image size to use',
+          options: ['128', '256', '512', '1024', '2048', '4096'].map((n) => ({label: n, value: n, default: n === '1024'}))
+     }
+})
 function openImage(url: string) {
-    const format = url.startsWith("/") ? "png" : settings.store.format;
-
-    const u = new URL(url, window.location.href);
-    u.searchParams.set("size", settings.store.imgSize);
-    u.pathname = u.pathname.replace(/\.(png|jpe?g|webp)$/, `.${format}`);
-    url = u.toString();
-
-    u.searchParams.set("size", "4096");
-    const originalUrl = u.toString();
-
-    openImageModal(url, {
-        original: originalUrl,
-        height: 256
-    });
+     const format = url.startsWith('/') ? 'png' : settings.store.format
+     const u = new URL(url, window.location.href)
+     u.searchParams.set('size', settings.store.imgSize)
+     u.pathname = u.pathname.replace(/\.(png|jpe?g|webp)$/, `.${format}`)
+     url = u.toString()
+     u.searchParams.set('size', '4096')
+     const originalUrl = u.toString()
+     openImageModal(url, {
+          original: originalUrl,
+          height: 256
+     })
 }
 
-const UserContext: NavContextMenuPatchCallback = (children, { user, guildId }: UserContextProps) => {
-    if (!user) return;
-    const memberAvatar = GuildMemberStore.getMember(guildId!, user.id)?.avatar || null;
-
-    children.splice(-1, 0, (
-        <Menu.MenuGroup>
-            <Menu.MenuItem
-                id="view-avatar"
-                label="View Avatar"
-                action={() => openImage(IconUtils.getUserAvatarURL(user, true))}
-                icon={ImageIcon}
-            />
-            {memberAvatar && (
-                <Menu.MenuItem
-                    id="view-server-avatar"
-                    label="View Server Avatar"
-                    action={() => openImage(IconUtils.getGuildMemberAvatarURLSimple({
-                        userId: user.id,
-                        avatar: memberAvatar,
-                        guildId: guildId!,
-                        canAnimate: true
-                    }))}
+const UserContext: NavContextMenuPatchCallback = (children, {user, guildId}: UserContextProps) => {
+     if (!user) return
+     const memberAvatar = GuildMemberStore.getMember(guildId!, user.id)?.avatar || null
+     children.splice(-1, 0, (
+          <Menu.MenuGroup>
+               <Menu.MenuItem
+                    id='view-avatar'
+                    label='View Avatar'
+                    action={() => openImage(IconUtils.getUserAvatarURL(user, true))}
                     icon={ImageIcon}
-                />
-            )}
-        </Menu.MenuGroup>
-    ));
-};
-
-const GuildContext: NavContextMenuPatchCallback = (children, { guild }: GuildContextProps) => {
-    if (!guild) return;
-
-    const { id, icon, banner } = guild;
-    if (!banner && !icon) return;
-
-    children.splice(-1, 0, (
-        <Menu.MenuGroup>
-            {icon ? (
-                <Menu.MenuItem
-                    id="view-icon"
-                    label="View Icon"
+               />
+               {memberAvatar && (
+                    <Menu.MenuItem
+                         id='view-server-avatar'
+                         label='View Server Avatar'
+                         action={() => openImage(IconUtils.getGuildMemberAvatarURLSimple({
+                              userId: user.id,
+                              avatar: memberAvatar,
+                              guildId: guildId!,
+                              canAnimate: true
+                         }))}
+                         icon={ImageIcon}
+                    />
+               )}
+          </Menu.MenuGroup>
+     ))
+}
+const GuildContext: NavContextMenuPatchCallback = (children, {guild}: GuildContextProps) => {
+     if (!guild) return
+     const {id, icon, banner} = guild
+     if (!banner && !icon) return
+     children.splice(-1, 0, (
+          <Menu.MenuGroup>
+               {icon ? (
+                    <Menu.MenuItem
+                         id='view-icon'
+                         label='View Icon'
+                         action={() =>
+                              openImage(IconUtils.getGuildIconURL({
+                                   id,
+                                   icon,
+                                   canAnimate: true
+                              })!)
+                         }
+                         icon={ImageIcon}
+                    />
+               ) : null}
+               {banner ? (
+                    <Menu.MenuItem
+                         id='view-banner'
+                         label='View Banner'
+                         action={() =>
+                              openImage(IconUtils.getGuildBannerURL(guild, true)!)
+                         }
+                         icon={ImageIcon}
+                    />
+               ) : null}
+          </Menu.MenuGroup>
+     ))
+}
+const GroupDMContext: NavContextMenuPatchCallback = (children, {channel}: GroupDMContextProps) => {
+     if (!channel) return
+     children.splice(-1, 0, (
+          <Menu.MenuGroup>
+               <Menu.MenuItem
+                    id='view-group-channel-icon'
+                    label='View Icon'
                     action={() =>
-                        openImage(IconUtils.getGuildIconURL({
-                            id,
-                            icon,
-                            canAnimate: true
-                        })!)
+                         openImage(IconUtils.getChannelIconURL(channel)!)
                     }
                     icon={ImageIcon}
-                />
-            ) : null}
-            {banner ? (
-                <Menu.MenuItem
-                    id="view-banner"
-                    label="View Banner"
-                    action={() =>
-                        openImage(IconUtils.getGuildBannerURL(guild, true)!)
-                    }
-                    icon={ImageIcon}
-                />
-            ) : null}
-        </Menu.MenuGroup>
-    ));
-};
-
-const GroupDMContext: NavContextMenuPatchCallback = (children, { channel }: GroupDMContextProps) => {
-    if (!channel) return;
-
-    children.splice(-1, 0, (
-        <Menu.MenuGroup>
-            <Menu.MenuItem
-                id="view-group-channel-icon"
-                label="View Icon"
-                action={() =>
-                    openImage(IconUtils.getChannelIconURL(channel)!)
-                }
-                icon={ImageIcon}
-            />
-        </Menu.MenuGroup>
-    ));
-};
-
+               />
+          </Menu.MenuGroup>
+     ))
+}
 export default definePlugin({
-    name: "ViewIcons",
-    authors: [Devs.Ven, Devs.TheKodeToad, Devs.Nuckyz, Devs.nyx],
-    description: "Makes avatars and banners in user profiles clickable, adds View Icon/Banner entries in the user, server and group channel context menu.",
-    tags: ["ImageUtilities"],
+     name: 'ViewIcons',
+     authors: [Devs.Ven, Devs.TheKodeToad, Devs.Nuckyz, Devs.nyx],
+     description: 'Makes avatars and banners in user profiles clickable, adds View Icon/Banner entries in the user, server and group channel context menu.',
+     tags: ['ImageUtilities'],
 
-    settings,
+     settings,
 
-    openImage,
+     openImage,
 
-    contextMenus: {
-        "user-context": UserContext,
-        "guild-context": GuildContext,
-        "gdm-context": GroupDMContext
-    },
+     contextMenus: {
+          'user-context': UserContext,
+          'guild-context': GuildContext,
+          'gdm-context': GroupDMContext
+     },
 
-    patches: [
-        // Avatar component used in User DMs "User Profile" popup in the right and Profiles Modal pfp
-        {
-            find: ".overlay:void 0,status:",
-            replacement: {
-                match: /avatarSrc:(\i),eventHandlers:(\i).+?"div",{...\2,/,
-                replace: "$&style:{cursor:\"pointer\"},onClick:()=>{$self.openImage($1)},"
-            },
-            all: true
-        },
-        // Banners
-        {
-            find: 'backgroundColor:"COMPLETE"',
-            replacement: {
-                match: /(\.banner,.+?),style:{(?=.+?backgroundImage:null!=(\i)\?"url\("\.concat\(\2,)/,
-                replace: (_, rest, bannerSrc) => `${rest},onClick:()=>${bannerSrc}!=null&&$self.openImage(${bannerSrc}),style:{cursor:${bannerSrc}!=null?"pointer":void 0,`
-            }
-        },
-        // Group DMs top small & large icon
-        {
-            find: /\.recipients\.length>=2(?!<isMultiUserDM.{0,50})/,
-            replacement: {
-                match: /null==\i\.icon\?.+?src:(\(0,\i\.\i\).+?\))(?=[,}])/,
-                replace: (m, iconUrl) => `${m},onClick:()=>$self.openImage(${iconUrl})`
-            }
-        },
-        // User DMs top small icon
-        {
-            find: ".cursorPointer:null,children",
-            replacement: {
-                match: /.Avatar,.+?src:(.+?\))(?=[,}])/,
-                replace: (m, avatarUrl) => `${m},onClick:()=>$self.openImage(${avatarUrl})`
-            }
-        },
-        // User Dms top large icon
-        {
-            find: 'experimentLocation:"empty_messages"',
-            replacement: {
-                match: /.Avatar,.+?src:(.+?\))(?=[,}])/,
-                replace: (m, avatarUrl) => `${m},onClick:()=>$self.openImage(${avatarUrl})`
-            }
-        }
-    ]
-});
+     patches: [
+          //Avatar component used in User DMs "User Profile" popup in the right and Profiles Modal pfp
+          {
+               find: '.overlay:void 0,status:',
+               replacement: {
+                    match: /avatarSrc:(\i),eventHandlers:(\i).+?"div",{...\2,/,
+                    replace: '$&style:{cursor:"pointer"},onClick:()=>{$self.openImage($1)},'
+               },
+               all: true
+          },
+          //Banners
+          {
+               find: 'backgroundColor:"COMPLETE"',
+               replacement: {
+                    match: /(\.banner,.+?),style:{(?=.+?backgroundImage:null!=(\i)\?"url\("\.concat\(\2,)/,
+                    replace: (_, rest, bannerSrc) => `${rest},onClick:()=>${bannerSrc}!=null&&$self.openImage(${bannerSrc}),style:{cursor:${bannerSrc}!=null?"pointer":void 0,`
+               }
+          },
+          //Group DMs top small & large icon
+          {
+               find: /\.recipients\.length>=2(?!<isMultiUserDM.{0,50})/,
+               replacement: {
+                    match: /null==\i\.icon\?.+?src:(\(0,\i\.\i\).+?\))(?=[,}])/,
+                    replace: (m, iconUrl) => `${m},onClick:()=>$self.openImage(${iconUrl})`
+               }
+          },
+          //User DMs top small icon
+          {
+               find: '.cursorPointer:null,children',
+               replacement: {
+                    match: /.Avatar,.+?src:(.+?\))(?=[,}])/,
+                    replace: (m, avatarUrl) => `${m},onClick:()=>$self.openImage(${avatarUrl})`
+               }
+          },
+          //User Dms top large icon
+          {
+               find: 'experimentLocation:"empty_messages"',
+               replacement: {
+                    match: /.Avatar,.+?src:(.+?\))(?=[,}])/,
+                    replace: (m, avatarUrl) => `${m},onClick:()=>$self.openImage(${avatarUrl})`
+               }
+          }
+     ]
+})

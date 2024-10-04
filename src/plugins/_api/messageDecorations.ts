@@ -16,20 +16,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Devs } from "@utils/constants";
-import definePlugin from "@utils/types";
-
+import {Devs} from '@utils/constants'
+import definePlugin from '@utils/types'
 export default definePlugin({
-    name: "MessageDecorationsAPI",
-    description: "API to add decorations to messages",
-    authors: [Devs.TheSun],
-    patches: [
-        {
-            find: '"Message Username"',
-            replacement: {
-                match: /\.Messages\.GUILD_COMMUNICATION_DISABLED_BOTTOM_SHEET_TITLE.+?}\),\i(?=\])/,
-                replace: "$&,...Vencord.Api.MessageDecorations.__addDecorationsToMessage(arguments[0])"
-            }
-        }
-    ],
-});
+     name: 'MessageDecorationsAPI',
+     description: 'API to add decorations to messages',
+     authors: [Devs.TheSun],
+     patches: [
+          {
+               find: '"Message Username"',
+               replacement: {
+                    match: /\.Messages\.GUILD_COMMUNICATION_DISABLED_BOTTOM_SHEET_TITLE.+?}\),\i(?=\])/,
+                    replace: '$&,...Vencord.Api.MessageDecorations.__addDecorationsToMessage(arguments[0])'
+               }
+          }
+     ],
+})

@@ -16,23 +16,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Devs } from "@utils/constants";
-import definePlugin from "@utils/types";
-
-import StartupTimingPage from "./StartupTimingPage";
-
+import {Devs} from '@utils/constants'
+import definePlugin from '@utils/types'
+import StartupTimingPage from './StartupTimingPage'
 export default definePlugin({
-    name: "StartupTimings",
-    description: "Adds Startup Timings to the Settings menu",
-    authors: [Devs.Megu],
-    patches: [{
-        find: "Messages.ACTIVITY_SETTINGS",
-        replacement: {
-            match: /(?<=}\)([,;])(\i\.settings)\.forEach.+?(\i)\.push.+}\)}\))/,
-            replace: (_, commaOrSemi, settings, elements) => "" +
+     name: 'StartupTimings',
+     description: 'Adds Startup Timings to the Settings menu',
+     authors: [Devs.Megu],
+     patches: [{
+          find: 'Messages.ACTIVITY_SETTINGS',
+          replacement: {
+               match: /(?<=}\)([,;])(\i\.settings)\.forEach.+?(\i)\.push.+}\)}\))/,
+               replace: (_, commaOrSemi, settings, elements) => '' +
                 `${commaOrSemi}${settings}?.[0]==="CHANGELOG"` +
                 `&&${elements}.push({section:"StartupTimings",label:"Startup Timings",element:$self.StartupTimingPage})`
-        }
-    }],
-    StartupTimingPage
-});
+          }
+     }],
+     StartupTimingPage
+})

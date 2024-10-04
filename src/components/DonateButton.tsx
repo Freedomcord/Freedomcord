@@ -16,20 +16,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Button } from "@webpack/common";
-
-import { Heart } from "./Heart";
-
+import {Button} from '@webpack/common'
+import {Heart} from './Heart'
 export default function DonateButton(props: any) {
-    return (
-        <Button
-            {...props}
-            look={Button.Looks.LINK}
-            color={Button.Colors.TRANSPARENT}
-            onClick={() => VencordNative.native.openExternal("https://github.com/sponsors/Vendicated")}
-        >
-            <Heart />
-            Donate
-        </Button>
-    );
+     return (
+          <Button
+               {...props}
+               look={Button.Looks.LINK}
+               color={Button.Colors.TRANSPARENT}
+               onClick={() => VencordNative.native.openExternal('https://github.com/sponsors/Vendicated')}
+          >
+               <Heart />
+               Donate
+          </Button>
+     )
 }

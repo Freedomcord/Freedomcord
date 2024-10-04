@@ -16,34 +16,28 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { React } from "@webpack/common";
-
-type Shiki = typeof import("../api/shiki").shiki;
+import {React} from '@webpack/common'
+type Shiki = typeof import('../api/shiki').shiki
 interface ThemeState {
-    id: Shiki["currentThemeUrl"],
-    theme: Shiki["currentTheme"],
+     id: Shiki['currentThemeUrl'],
+     theme: Shiki['currentTheme'],
 }
 
 const currentTheme: ThemeState = {
-    id: null,
-    theme: null,
-};
-
-const themeSetters = new Set<React.Dispatch<React.SetStateAction<ThemeState>>>();
-
+     id: null,
+     theme: null,
+}
+const themeSetters = new Set<React.Dispatch<React.SetStateAction<ThemeState>>>()
 export const useTheme = (): ThemeState => {
-    const [, setTheme] = React.useState<ThemeState>(currentTheme);
-
-    React.useEffect(() => {
-        themeSetters.add(setTheme);
-        return () => void themeSetters.delete(setTheme);
-    }, []);
-
-    return currentTheme;
-};
-
+     const [, setTheme] = React.useState<ThemeState>(currentTheme)
+     React.useEffect(() => {
+          themeSetters.add(setTheme)
+          return () => void themeSetters.delete(setTheme)
+     }, [])
+     return currentTheme
+}
 export function dispatchTheme(state: ThemeState) {
-    if (currentTheme.id === state.id) return;
-    Object.assign(currentTheme, state);
-    themeSetters.forEach(setTheme => setTheme(state));
+     if (currentTheme.id === state.id) return
+     Object.assign(currentTheme, state)
+     themeSetters.forEach((setTheme) => setTheme(state))
 }

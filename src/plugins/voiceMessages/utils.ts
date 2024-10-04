@@ -16,8 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { classNameFactory } from "@api/Styles";
-import { findStoreLazy } from "@webpack";
-
-export const MediaEngineStore = findStoreLazy("MediaEngineStore");
-export const cl = classNameFactory("vc-vmsg-");
+import {classNameFactory} from '@api/Styles'
+import {findStoreLazy} from '@webpack'
+export const MediaEngineStore = findStoreLazy('MediaEngineStore')
+export const cl = classNameFactory('vc-vmsg-')

@@ -16,22 +16,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { migratePluginSettings } from "@api/Settings";
-import { Devs } from "@utils/constants";
-import definePlugin from "@utils/types";
-
-migratePluginSettings("AlwaysExpandRoles", "ShowAllRoles");
+import {migratePluginSettings} from '@api/Settings'
+import {Devs} from '@utils/constants'
+import definePlugin from '@utils/types'
+migratePluginSettings('AlwaysExpandRoles', 'ShowAllRoles')
 export default definePlugin({
-    name: "AlwaysExpandRoles",
-    description: "Always expands the role list in profile popouts",
-    authors: [Devs.surgedevs],
-    patches: [
-        {
-            find: 'action:"EXPAND_ROLES"',
-            replacement: {
-                match: /(roles:\i(?=.+?(\i)\(!0\)[,;]\i\({action:"EXPAND_ROLES"}\)).+?\[\i,\2\]=\i\.useState\()!1\)/,
-                replace: (_, rest, setExpandedRoles) => `${rest}!0)`
-            }
-        }
-    ]
-});
+     name: 'AlwaysExpandRoles',
+     description: 'Always expands the role list in profile popouts',
+     authors: [Devs.surgedevs],
+     patches: [
+          {
+               find: 'action:"EXPAND_ROLES"',
+               replacement: {
+                    match: /(roles:\i(?=.+?(\i)\(!0\)[,;]\i\({action:"EXPAND_ROLES"}\)).+?\[\i,\2\]=\i\.useState\()!1\)/,
+                    replace: (_, rest, setExpandedRoles) => `${rest}!0)`
+               }
+          }
+     ]
+})

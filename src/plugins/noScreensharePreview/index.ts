@@ -16,20 +16,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Devs } from "@utils/constants";
-import definePlugin from "@utils/types";
-
+import {Devs} from '@utils/constants'
+import definePlugin from '@utils/types'
 export default definePlugin({
-    name: "NoScreensharePreview",
-    description: "Disables screenshare previews from being sent.",
-    authors: [Devs.Nuckyz],
-    patches: [
-        {
-            find: '"ApplicationStreamPreviewUploadManager"',
-            replacement: {
-                match: /await \i\.\i\.(makeChunkedRequest\(|post\(\{url:)\i\.\i\.STREAM_PREVIEW.+?\}\)/g,
-                replace: "0"
-            }
-        }
-    ]
-});
+     name: 'NoScreensharePreview',
+     description: 'Disables screenshare previews from being sent.',
+     authors: [Devs.Nuckyz],
+     patches: [
+          {
+               find: '"ApplicationStreamPreviewUploadManager"',
+               replacement: {
+                    match: /await \i\.\i\.(makeChunkedRequest\(|post\(\{url:)\i\.\i\.STREAM_PREVIEW.+?\}\)/g,
+                    replace: '0'
+               }
+          }
+     ]
+})

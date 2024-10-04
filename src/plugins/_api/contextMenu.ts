@@ -16,30 +16,29 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Devs } from "@utils/constants";
-import definePlugin from "@utils/types";
-
+import {Devs} from '@utils/constants'
+import definePlugin from '@utils/types'
 export default definePlugin({
-    name: "ContextMenuAPI",
-    description: "API for adding/removing items to/from context menus.",
-    authors: [Devs.Nuckyz, Devs.Ven, Devs.Kyuuhachi],
-    required: true,
+     name: 'ContextMenuAPI',
+     description: 'API for adding/removing items to/from context menus.',
+     authors: [Devs.Nuckyz, Devs.Ven, Devs.Kyuuhachi],
+     required: true,
 
-    patches: [
-        {
-            find: "♫ (つ｡◕‿‿◕｡)つ ♪",
-            replacement: {
-                match: /(?=let{navId:)(?<=function \i\((\i)\).+?)/,
-                replace: "$1=Vencord.Api.ContextMenu._usePatchContextMenu($1);"
-            }
-        },
-        {
-            find: ".Menu,{",
-            all: true,
-            replacement: {
-                match: /Menu,{(?<=\.jsxs?\)\(\i\.Menu,{)/g,
-                replace: "$&contextMenuApiArguments:typeof arguments!=='undefined'?arguments:[],"
-            }
-        }
-    ]
-});
+     patches: [
+          {
+               find: '♫ (つ｡◕‿‿◕｡)つ ♪',
+               replacement: {
+                    match: /(?=let{navId:)(?<=function \i\((\i)\).+?)/,
+                    replace: '$1=Vencord.Api.ContextMenu._usePatchContextMenu($1);'
+               }
+          },
+          {
+               find: '.Menu,{',
+               all: true,
+               replacement: {
+                    match: /Menu,{(?<=\.jsxs?\)\(\i\.Menu,{)/g,
+                    replace: "$&contextMenuApiArguments:typeof arguments!=='undefined'?arguments:[],"
+               }
+          }
+     ]
+})

@@ -16,49 +16,41 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Parser, useEffect, useState } from "@webpack/common";
-import { Message } from "discord-types/general";
-
-import { TranslateIcon } from "./TranslateIcon";
-import { cl, TranslationValue } from "./utils";
-
-const TranslationSetters = new Map<string, (v: TranslationValue) => void>();
-
+import {Parser, useEffect, useState} from '@webpack/common'
+import {Message} from 'discord-types/general'
+import {TranslateIcon} from './TranslateIcon'
+import {cl, TranslationValue} from './utils'
+const TranslationSetters = new Map<string, (v: TranslationValue) => void>()
 export function handleTranslate(messageId: string, data: TranslationValue) {
-    TranslationSetters.get(messageId)!(data);
+     TranslationSetters.get(messageId)!(data)
 }
 
-function Dismiss({ onDismiss }: { onDismiss: () => void; }) {
-    return (
-        <button
-            onClick={onDismiss}
-            className={cl("dismiss")}
-        >
-            Dismiss
-        </button>
-    );
+function Dismiss({onDismiss}: {onDismiss: () => void;}) {
+     return (
+          <button
+               onClick={onDismiss}
+               className={cl('dismiss')}
+          >
+               Dismiss
+          </button>
+     )
 }
 
-export function TranslationAccessory({ message }: { message: Message; }) {
-    const [translation, setTranslation] = useState<TranslationValue>();
-
-    useEffect(() => {
-        // Ignore MessageLinkEmbeds messages
-        if ((message as any).vencordEmbeddedBy) return;
-
-        TranslationSetters.set(message.id, setTranslation);
-
-        return () => void TranslationSetters.delete(message.id);
-    }, []);
-
-    if (!translation) return null;
-
-    return (
-        <span className={cl("accessory")}>
-            <TranslateIcon width={16} height={16} />
-            {Parser.parse(translation.text)}
-            {" "}
-            (translated from {translation.sourceLanguage} - <Dismiss onDismiss={() => setTranslation(undefined)} />)
-        </span>
-    );
+export function TranslationAccessory({message}: {message: Message;}) {
+     const [translation, setTranslation] = useState<TranslationValue>()
+     useEffect(() => {
+          //Ignore MessageLinkEmbeds messages
+          if ((message as any).vencordEmbeddedBy) return
+          TranslationSetters.set(message.id, setTranslation)
+          return () => void TranslationSetters.delete(message.id)
+     }, [])
+     if (!translation) return null
+     return (
+          <span className={cl('accessory')}>
+               <TranslateIcon width={16} height={16} />
+               {Parser.parse(translation.text)}
+               {' '}
+               (translated from {translation.sourceLanguage} - <Dismiss onDismiss={() => setTranslation(undefined)} />)
+          </span>
+     )
 }

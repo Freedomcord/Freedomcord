@@ -16,39 +16,37 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { proxyLazy } from "@utils/lazy";
-import { Logger } from "@utils/Logger";
-import { findModuleId, proxyLazyWebpack, wreq } from "@webpack";
-
+import {proxyLazy} from '@utils/lazy'
+import {Logger} from '@utils/Logger'
+import {findModuleId, proxyLazyWebpack, wreq} from '@webpack'
 interface UserSettingDefinition<T> {
-    /**
+     /**
      * Get the setting value
      */
-    getSetting(): T;
-    /**
+     getSetting(): T;
+     /**
      * Update the setting value
      * @param value The new value
      */
-    updateSetting(value: T): Promise<void>;
-    /**
+     updateSetting(value: T): Promise<void>;
+     /**
      * Update the setting value
      * @param value A callback that accepts the old value as the first argument, and returns the new value
      */
-    updateSetting(value: (old: T) => T): Promise<void>;
-    /**
+     updateSetting(value: (old: T) => T): Promise<void>;
+     /**
      * Stateful React hook for this setting value
      */
-    useSetting(): T;
-    userSettingsAPIGroup: string;
-    userSettingsAPIName: string;
+     useSetting(): T;
+     userSettingsAPIGroup: string;
+     userSettingsAPIName: string;
 }
 
 export const UserSettings: Record<PropertyKey, UserSettingDefinition<any>> | undefined = proxyLazyWebpack(() => {
-    const modId = findModuleId('"textAndImages","renderSpoilers"');
-    if (modId == null) return new Logger("UserSettingsAPI ").error("Didn't find settings module.");
-
-    return wreq(modId as any);
-});
+     const modId = findModuleId('"textAndImages","renderSpoilers"')
+     if (modId == null) return new Logger('UserSettingsAPI ').error("Didn't find settings module.")
+     return wreq(modId as any)
+})
 
 /**
  * Get the setting with the given setting group and name.
@@ -57,15 +55,13 @@ export const UserSettings: Record<PropertyKey, UserSettingDefinition<any>> | und
  * @param name The name of the setting
  */
 export function getUserSetting<T = any>(group: string, name: string): UserSettingDefinition<T> | undefined {
-    if (!Vencord.Plugins.isPluginEnabled("UserSettingsAPI")) throw new Error("Cannot use UserSettingsAPI without setting as dependency.");
-
-    for (const key in UserSettings) {
-        const userSetting = UserSettings[key];
-
-        if (userSetting.userSettingsAPIGroup === group && userSetting.userSettingsAPIName === name) {
-            return userSetting;
-        }
-    }
+     if (!Vencord.Plugins.isPluginEnabled('UserSettingsAPI')) throw new Error('Cannot use UserSettingsAPI without setting as dependency.')
+     for (const key in UserSettings) {
+          const userSetting = UserSettings[key]
+          if (userSetting.userSettingsAPIGroup === group && userSetting.userSettingsAPIName === name) {
+               return userSetting
+          }
+     }
 }
 
 /**
@@ -77,5 +73,5 @@ export function getUserSetting<T = any>(group: string, name: string): UserSettin
  * @param name The name of the setting
  */
 export function getUserSettingLazy<T = any>(group: string, name: string) {
-    return proxyLazy(() => getUserSetting<T>(group, name));
+     return proxyLazy(() => getUserSetting<T>(group, name))
 }

@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import type { LiteralUnion } from "type-fest";
+import type {LiteralUnion} from 'type-fest'
 
 /**
  * Wait for a property to be defined on the target, then call the callback with
@@ -28,20 +28,18 @@ import type { LiteralUnion } from "type-fest";
  * @example onceDefined(window, "webpackChunkdiscord_app", wpInstance => wpInstance.push(...));
  */
 export function onceDefined<T extends object, P extends LiteralUnion<keyof T, PropertyKey>>(
-    target: T, property: P, callback: (v: P extends keyof T ? T[P] : any) => void
+     target: T, property: P, callback: (v: P extends keyof T ? T[P] : any) => void
 ): void {
-    const propertyAsAny = property as any;
-
-    if (property in target)
-        return void callback(target[propertyAsAny]);
-
-    Object.defineProperty(target, property, {
-        set(v) {
-            delete target[propertyAsAny];
-            target[propertyAsAny] = v;
-            callback(v);
-        },
-        configurable: true,
-        enumerable: false
-    });
+     const propertyAsAny = property as any
+     if (property in target)
+          return void callback(target[propertyAsAny])
+     Object.defineProperty(target, property, {
+          set(v) {
+               delete target[propertyAsAny]
+               target[propertyAsAny] = v
+               callback(v)
+          },
+          configurable: true,
+          enumerable: false
+     })
 }

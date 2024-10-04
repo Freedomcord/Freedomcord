@@ -16,89 +16,78 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Settings, SettingsStore } from "@api/Settings";
-import { ThemeStore } from "@webpack/common";
-
-
-let style: HTMLStyleElement;
-let themesStyle: HTMLStyleElement;
-
+import {Settings, SettingsStore} from '@api/Settings'
+import {ThemeStore} from '@webpack/common'
+let style: HTMLStyleElement
+let themesStyle: HTMLStyleElement
 function createStyle(id: string) {
-    const style = document.createElement("style");
-    style.id = id;
-    document.documentElement.append(style);
-    return style;
+     const style = document.createElement('style')
+     style.id = id
+     document.documentElement.append(style)
+     return style
 }
 
 async function initSystemValues() {
-    const values = await VencordNative.themes.getSystemValues();
-    const variables = Object.entries(values)
-        .filter(([, v]) => v !== "#")
-        .map(([k, v]) => `--${k}: ${v};`)
-        .join("");
-
-    createStyle("vencord-os-theme-values").textContent = `:root{${variables}}`;
+     const values = await VencordNative.themes.getSystemValues()
+     const variables = Object.entries(values)
+          .filter(([, v]) => v !== '#')
+          .map(([k, v]) => `--${k}: ${v};`)
+          .join('')
+     createStyle('vencord-os-theme-values').textContent = `:root{${variables}}`
 }
 
 export async function toggle(isEnabled: boolean) {
-    if (!style) {
-        if (isEnabled) {
-            style = createStyle("vencord-custom-css");
-            VencordNative.quickCss.addChangeListener(css => {
-                style.textContent = css;
-                // At the time of writing this, changing textContent resets the disabled state
-                style.disabled = !Settings.useQuickCss;
-            });
-            style.textContent = await VencordNative.quickCss.get();
-        }
-    } else
-        style.disabled = !isEnabled;
+     if (!style) {
+          if (isEnabled) {
+               style = createStyle('vencord-custom-css')
+               VencordNative.quickCss.addChangeListener((css) => {
+                    style.textContent = css
+                    //At the time of writing this, changing textContent resets the disabled state
+                    style.disabled = !Settings.useQuickCss
+               })
+               style.textContent = await VencordNative.quickCss.get()
+          }
+     } else
+          style.disabled = !isEnabled
 }
 
 async function initThemes() {
-    themesStyle ??= createStyle("vencord-themes");
+     themesStyle ??= createStyle('vencord-themes')
+     const {themeLinks, enabledThemes} = Settings
 
-    const { themeLinks, enabledThemes } = Settings;
+     //"darker" and "midnight" both count as dark
+     const activeTheme = ThemeStore.theme === 'light' ? 'light' : 'dark'
+     const links = themeLinks
+          .map((rawLink) => {
+               const match = /^@(light|dark) (.*)/.exec(rawLink)
+               if (!match) return rawLink
+               const [, mode, link] = match
+               return mode === activeTheme ? link : null
+          })
+          .filter((link) => link !== null)
+     if (IS_WEB) {
+          for (const theme of enabledThemes) {
+               const themeData = await VencordNative.themes.getThemeData(theme)
+               if (!themeData) continue
+               const blob = new Blob([themeData], {type: 'text/css'})
+               links.push(URL.createObjectURL(blob))
+          }
+     } else {
+          const localThemes = enabledThemes.map((theme) => `vencord:///themes/${theme}?v=${Date.now()}`)
+          links.push(...localThemes)
+     }
 
-    // "darker" and "midnight" both count as dark
-    const activeTheme = ThemeStore.theme === "light" ? "light" : "dark";
-
-    const links = themeLinks
-        .map(rawLink => {
-            const match = /^@(light|dark) (.*)/.exec(rawLink);
-            if (!match) return rawLink;
-
-            const [, mode, link] = match;
-            return mode === activeTheme ? link : null;
-        })
-        .filter(link => link !== null);
-
-    if (IS_WEB) {
-        for (const theme of enabledThemes) {
-            const themeData = await VencordNative.themes.getThemeData(theme);
-            if (!themeData) continue;
-            const blob = new Blob([themeData], { type: "text/css" });
-            links.push(URL.createObjectURL(blob));
-        }
-    } else {
-        const localThemes = enabledThemes.map(theme => `vencord:///themes/${theme}?v=${Date.now()}`);
-        links.push(...localThemes);
-    }
-
-    themesStyle.textContent = links.map(link => `@import url("${link.trim()}");`).join("\n");
+     themesStyle.textContent = links.map((link) => `@import url("${link.trim()}");`).join('\n')
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-    initSystemValues();
-    initThemes();
-
-    toggle(Settings.useQuickCss);
-    SettingsStore.addChangeListener("useQuickCss", toggle);
-
-    SettingsStore.addChangeListener("themeLinks", initThemes);
-    SettingsStore.addChangeListener("enabledThemes", initThemes);
-    ThemeStore.addChangeListener(initThemes);
-
-    if (!IS_WEB)
-        VencordNative.quickCss.addThemeChangeListener(initThemes);
-});
+document.addEventListener('DOMContentLoaded', () => {
+     initSystemValues()
+     initThemes()
+     toggle(Settings.useQuickCss)
+     SettingsStore.addChangeListener('useQuickCss', toggle)
+     SettingsStore.addChangeListener('themeLinks', initThemes)
+     SettingsStore.addChangeListener('enabledThemes', initThemes)
+     ThemeStore.addChangeListener(initThemes)
+     if (!IS_WEB)
+          VencordNative.quickCss.addThemeChangeListener(initThemes)
+})

@@ -16,14 +16,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Settings } from "@api/Settings";
-import { Devs } from "@utils/constants";
-import definePlugin, { OptionType } from "@utils/types";
-
-let style: HTMLStyleElement;
-
+import {Settings} from '@api/Settings'
+import {Devs} from '@utils/constants'
+import definePlugin, {OptionType} from '@utils/types'
+let style: HTMLStyleElement
 function setCss() {
-    style.textContent = `
+     style.textContent = `
         .vc-nsfw-img [class^=imageWrapper] img,
         .vc-nsfw-img [class^=wrapperPaused] video {
             filter: blur(${Settings.plugins.BlurNSFW.blurAmount}px);
@@ -33,42 +31,41 @@ function setCss() {
         .vc-nsfw-img [class^=wrapperPaused]:hover video {
             filter: unset;
         }
-        `;
+        `
 }
 
 export default definePlugin({
-    name: "BlurNSFW",
-    description: "Blur attachments in NSFW channels until hovered",
-    authors: [Devs.Ven],
+     name: 'BlurNSFW',
+     description: 'Blur attachments in NSFW channels until hovered',
+     authors: [Devs.Ven],
 
-    patches: [
-        {
-            find: ".embedWrapper,embed",
-            replacement: [{
-                match: /\.embedWrapper(?=.+?channel_id:(\i)\.id)/g,
-                replace: "$&+($1.nsfw?' vc-nsfw-img':'')"
-            }]
-        }
-    ],
+     patches: [
+          {
+               find: '.embedWrapper,embed',
+               replacement: [{
+                    match: /\.embedWrapper(?=.+?channel_id:(\i)\.id)/g,
+                    replace: "$&+($1.nsfw?' vc-nsfw-img':'')"
+               }]
+          }
+     ],
 
-    options: {
-        blurAmount: {
-            type: OptionType.NUMBER,
-            description: "Blur Amount",
-            default: 10,
-            onChange: setCss
-        }
-    },
+     options: {
+          blurAmount: {
+               type: OptionType.NUMBER,
+               description: 'Blur Amount',
+               default: 10,
+               onChange: setCss
+          }
+     },
 
-    start() {
-        style = document.createElement("style");
-        style.id = "VcBlurNsfw";
-        document.head.appendChild(style);
+     start() {
+          style = document.createElement('style')
+          style.id = 'VcBlurNsfw'
+          document.head.appendChild(style)
+          setCss()
+     },
 
-        setCss();
-    },
-
-    stop() {
-        style?.remove();
-    }
-});
+     stop() {
+          style?.remove()
+     }
+})

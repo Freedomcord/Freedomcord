@@ -16,26 +16,25 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Devs } from "@utils/constants";
-import definePlugin from "@utils/types";
-
+import {Devs} from '@utils/constants'
+import definePlugin from '@utils/types'
 export default definePlugin({
-    name: "NoSystemBadge",
-    description: "Disables the taskbar and system tray unread count badge.",
-    authors: [Devs.rushii],
-    patches: [
-        {
-            find: ",setSystemTrayApplications",
-            replacement: [
-                {
-                    match: /setBadge\(\i\).+?},/,
-                    replace: "setBadge(){},"
-                },
-                {
-                    match: /setSystemTrayIcon\(\i\).+?},/,
-                    replace: "setSystemTrayIcon(){},"
-                }
-            ]
-        }
-    ]
-});
+     name: 'NoSystemBadge',
+     description: 'Disables the taskbar and system tray unread count badge.',
+     authors: [Devs.rushii],
+     patches: [
+          {
+               find: ',setSystemTrayApplications',
+               replacement: [
+                    {
+                         match: /setBadge\(\i\).+?},/,
+                         replace: 'setBadge(){},'
+                    },
+                    {
+                         match: /setSystemTrayIcon\(\i\).+?},/,
+                         replace: 'setSystemTrayIcon(){},'
+                    }
+               ]
+          }
+     ]
+})

@@ -16,16 +16,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import type { MapValue } from "type-fest/source/entry";
-
-export type Style = MapValue<typeof VencordStyles>;
-
-export const styleMap = window.VencordStyles ??= new Map();
-
+import type {MapValue} from 'type-fest/source/entry'
+export type Style = MapValue<typeof VencordStyles>
+export const styleMap = window.VencordStyles ??= new Map()
 export function requireStyle(name: string) {
-    const style = styleMap.get(name);
-    if (!style) throw new Error(`Style "${name}" does not exist`);
-    return style;
+     const style = styleMap.get(name)
+     if (!style) throw new Error(`Style "${name}" does not exist`)
+     return style
 }
 
 /**
@@ -39,19 +36,16 @@ export function requireStyle(name: string) {
  * enableStyle(pluginStyle);
  */
 export function enableStyle(name: string) {
-    const style = requireStyle(name);
-
-    if (style.dom?.isConnected)
-        return false;
-
-    if (!style.dom) {
-        style.dom = document.createElement("style");
-        style.dom.dataset.vencordName = style.name;
-    }
-    compileStyle(style);
-
-    document.head.appendChild(style.dom);
-    return true;
+     const style = requireStyle(name)
+     if (style.dom?.isConnected)
+          return false
+     if (!style.dom) {
+          style.dom = document.createElement('style')
+          style.dom.dataset.vencordName = style.name
+     }
+     compileStyle(style)
+     document.head.appendChild(style.dom)
+     return true
 }
 
 /**
@@ -60,13 +54,12 @@ export function enableStyle(name: string) {
  * @see {@link enableStyle} for info on getting the name of an imported style
  */
 export function disableStyle(name: string) {
-    const style = requireStyle(name);
-    if (!style.dom?.isConnected)
-        return false;
-
-    style.dom.remove();
-    style.dom = null;
-    return true;
+     const style = requireStyle(name)
+     if (!style.dom?.isConnected)
+          return false
+     style.dom.remove()
+     style.dom = null
+     return true
 }
 
 /**
@@ -74,14 +67,14 @@ export function disableStyle(name: string) {
  * @returns `true` in most cases, may return `false` in some edge cases
  * @see {@link enableStyle} for info on getting the name of an imported style
  */
-export const toggleStyle = (name: string) => isStyleEnabled(name) ? disableStyle(name) : enableStyle(name);
+export const toggleStyle = (name: string) => isStyleEnabled(name) ? disableStyle(name) : enableStyle(name)
 
 /**
  * @param name The name of the style
  * @returns Whether the style is enabled
  * @see {@link enableStyle} for info on getting the name of an imported style
  */
-export const isStyleEnabled = (name: string) => requireStyle(name).dom?.isConnected ?? false;
+export const isStyleEnabled = (name: string) => requireStyle(name).dom?.isConnected ?? false
 
 /**
  * Sets the variables of a style
@@ -110,11 +103,11 @@ export const isStyleEnabled = (name: string) => requireStyle(name).dom?.isConnec
  * @see {@link enableStyle} for info on getting the name of an imported style
  */
 export const setStyleClassNames = (name: string, classNames: Record<string, string>, recompile = true) => {
-    const style = requireStyle(name);
-    style.classNames = classNames;
-    if (recompile && isStyleEnabled(style.name))
-        compileStyle(style);
-};
+     const style = requireStyle(name)
+     style.classNames = classNames
+     if (recompile && isStyleEnabled(style.name))
+          compileStyle(style)
+}
 
 /**
  * Updates the stylesheet after doing the following to the sourcecode:
@@ -123,14 +116,13 @@ export const setStyleClassNames = (name: string, classNames: Record<string, stri
  * @see {@link setStyleClassNames} for more info on style classnames
  */
 export const compileStyle = (style: Style) => {
-    if (!style.dom) throw new Error("Style has no DOM element");
-
-    style.dom.textContent = style.source
-        .replace(/\[--(\w+)\]/g, (match, name) => {
-            const className = style.classNames[name];
-            return className ? classNameToSelector(className) : match;
-        });
-};
+     if (!style.dom) throw new Error('Style has no DOM element')
+     style.dom.textContent = style.source
+          .replace(/\[--(\w+)\]/g, (match, name) => {
+               const className = style.classNames[name]
+               return className ? classNameToSelector(className) : match
+          })
+}
 
 /**
  * @param name The classname
@@ -139,9 +131,8 @@ export const compileStyle = (style: Style) => {
  * @example
  * classNameToSelector("foo bar") // => ".foo.bar"
  */
-export const classNameToSelector = (name: string, prefix = "") => name.split(" ").map(n => `.${prefix}${n}`).join("");
-
-type ClassNameFactoryArg = string | string[] | Record<string, unknown> | false | null | undefined | 0 | "";
+export const classNameToSelector = (name: string, prefix = '') => name.split(' ').map((n) => `.${prefix}${n}`).join('')
+type ClassNameFactoryArg = string | string[] | Record<string, unknown> | false | null | undefined | 0 | ''
 /**
  * @param prefix The prefix to add to each class, defaults to `""`
  * @returns A classname generator function
@@ -151,12 +142,12 @@ type ClassNameFactoryArg = string | string[] | Record<string, unknown> | false |
  * cl("base", ["item", "editable"], { selected: null, disabled: true })
  * // => "plugin-base plugin-item plugin-editable plugin-disabled"
  */
-export const classNameFactory = (prefix: string = "") => (...args: ClassNameFactoryArg[]) => {
-    const classNames = new Set<string>();
-    for (const arg of args) {
-        if (arg && typeof arg === "string") classNames.add(arg);
-        else if (Array.isArray(arg)) arg.forEach(name => classNames.add(name));
-        else if (arg && typeof arg === "object") Object.entries(arg).forEach(([name, value]) => value && classNames.add(name));
-    }
-    return Array.from(classNames, name => prefix + name).join(" ");
-};
+export const classNameFactory = (prefix: string = '') => (...args: ClassNameFactoryArg[]) => {
+     const classNames = new Set<string>()
+     for (const arg of args) {
+          if (arg && typeof arg === 'string') classNames.add(arg)
+          else if (Array.isArray(arg)) arg.forEach((name) => classNames.add(name))
+          else if (arg && typeof arg === 'object') Object.entries(arg).forEach(([name, value]) => value && classNames.add(name))
+     }
+     return Array.from(classNames, (name) => prefix + name).join(' ')
+}

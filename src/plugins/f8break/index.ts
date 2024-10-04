@@ -16,27 +16,26 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Devs } from "@utils/constants";
-import definePlugin from "@utils/types";
-
+import {Devs} from '@utils/constants'
+import definePlugin from '@utils/types'
 export default definePlugin({
-    name: "F8Break",
-    description: "Pause the client when you press F8 with DevTools (+ breakpoints) open.",
-    authors: [Devs.lewisakura],
+     name: 'F8Break',
+     description: 'Pause the client when you press F8 with DevTools (+ breakpoints) open.',
+     authors: [Devs.lewisakura],
 
-    start() {
-        window.addEventListener("keydown", this.event);
-    },
+     start() {
+          window.addEventListener('keydown', this.event)
+     },
 
-    stop() {
-        window.removeEventListener("keydown", this.event);
-    },
+     stop() {
+          window.removeEventListener('keydown', this.event)
+     },
 
-    event(e: KeyboardEvent) {
-        if (e.code === "F8") {
-            // Hi! You've just paused the client. Pressing F8 in DevTools or in the main window will unpause it again.
-            // It's up to you on what to do, friend. Happy travels!
-            debugger;
-        }
-    }
-});
+     event(e: KeyboardEvent) {
+          if (e.code === 'F8') {
+               //Hi! You've just paused the client. Pressing F8 in DevTools or in the main window will unpause it again.
+               //It's up to you on what to do, friend. Happy travels!
+               debugger
+          }
+     }
+})

@@ -16,20 +16,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Devs } from "@utils/constants";
-import definePlugin from "@utils/types";
-
+import {Devs} from '@utils/constants'
+import definePlugin from '@utils/types'
 export default definePlugin({
-    name: "MessageAccessoriesAPI",
-    description: "API to add message accessories.",
-    authors: [Devs.Cyn],
-    patches: [
-        {
-            find: ".Messages.REMOVE_ATTACHMENT_BODY",
-            replacement: {
-                match: /(?<=.container\)?,children:)(\[.+?\])/,
-                replace: "Vencord.Api.MessageAccessories._modifyAccessories($1,this.props)",
-            },
-        },
-    ],
-});
+     name: 'MessageAccessoriesAPI',
+     description: 'API to add message accessories.',
+     authors: [Devs.Cyn],
+     patches: [
+          {
+               find: '.Messages.REMOVE_ATTACHMENT_BODY',
+               replacement: {
+                    match: /(?<=.container\)?,children:)(\[.+?\])/,
+                    replace: 'Vencord.Api.MessageAccessories._modifyAccessories($1,this.props)',
+               },
+          },
+     ],
+})

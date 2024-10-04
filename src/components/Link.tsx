@@ -16,21 +16,20 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { React } from "@webpack/common";
-
+import {React} from '@webpack/common'
 interface Props extends React.DetailedHTMLProps<React.AnchorHTMLAttributes<HTMLAnchorElement>, HTMLAnchorElement> {
-    disabled?: boolean;
+     disabled?: boolean;
 }
 
 export function Link(props: React.PropsWithChildren<Props>) {
-    if (props.disabled) {
-        props.style ??= {};
-        props.style.pointerEvents = "none";
-        props["aria-disabled"] = true;
-    }
-    return (
-        <a role="link" target="_blank" {...props}>
-            {props.children}
-        </a>
-    );
+     if (props.disabled) {
+          props.style ??= {}
+          props.style.pointerEvents = 'none'
+          props['aria-disabled'] = true
+     }
+     return (
+          <a role='link' target='_blank' {...props}>
+               {props.children}
+          </a>
+     )
 }

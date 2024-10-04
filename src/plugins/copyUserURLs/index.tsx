@@ -16,37 +16,34 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { NavContextMenuPatchCallback } from "@api/ContextMenu";
-import { LinkIcon } from "@components/Icons";
-import { Devs } from "@utils/constants";
-import definePlugin from "@utils/types";
-import { Clipboard, Menu } from "@webpack/common";
-import type { Channel, User } from "discord-types/general";
-
+import {NavContextMenuPatchCallback} from '@api/ContextMenu'
+import {LinkIcon} from '@components/Icons'
+import {Devs} from '@utils/constants'
+import definePlugin from '@utils/types'
+import {Clipboard, Menu} from '@webpack/common'
+import type {Channel, User} from 'discord-types/general'
 interface UserContextProps {
-    channel: Channel;
-    guildId?: string;
-    user: User;
+     channel: Channel;
+     guildId?: string;
+     user: User;
 }
 
-const UserContextMenuPatch: NavContextMenuPatchCallback = (children, { user }: UserContextProps) => {
-    if (!user) return;
-
-    children.push(
-        <Menu.MenuItem
-            id="vc-copy-user-url"
-            label="Copy User URL"
-            action={() => Clipboard.copy(`<https://discord.com/users/${user.id}>`)}
-            icon={LinkIcon}
-        />
-    );
-};
-
+const UserContextMenuPatch: NavContextMenuPatchCallback = (children, {user}: UserContextProps) => {
+     if (!user) return
+     children.push(
+          <Menu.MenuItem
+               id='vc-copy-user-url'
+               label='Copy User URL'
+               action={() => Clipboard.copy(`<https://discord.com/users/${user.id}>`)}
+               icon={LinkIcon}
+          />
+     )
+}
 export default definePlugin({
-    name: "CopyUserURLs",
-    authors: [Devs.castdrian],
-    description: "Adds a 'Copy User URL' option to the user context menu.",
-    contextMenus: {
-        "user-context": UserContextMenuPatch
-    }
-});
+     name: 'CopyUserURLs',
+     authors: [Devs.castdrian],
+     description: "Adds a 'Copy User URL' option to the user context menu.",
+     contextMenus: {
+          'user-context': UserContextMenuPatch
+     }
+})

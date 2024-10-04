@@ -16,59 +16,54 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import ErrorBoundary from "@components/ErrorBoundary";
-import { Logger } from "@utils/Logger";
-import { Channel, Message } from "discord-types/general";
-import type { ComponentType, MouseEventHandler } from "react";
-
-const logger = new Logger("MessagePopover");
-
+import ErrorBoundary from '@components/ErrorBoundary'
+import {Logger} from '@utils/Logger'
+import {Channel, Message} from 'discord-types/general'
+import type {ComponentType, MouseEventHandler} from 'react'
+const logger = new Logger('MessagePopover')
 export interface ButtonItem {
-    key?: string,
-    label: string,
-    icon: ComponentType<any>,
-    message: Message,
-    channel: Channel,
-    onClick?: MouseEventHandler<HTMLButtonElement>,
-    onContextMenu?: MouseEventHandler<HTMLButtonElement>;
+     key?: string,
+     label: string,
+     icon: ComponentType<any>,
+     message: Message,
+     channel: Channel,
+     onClick?: MouseEventHandler<HTMLButtonElement>,
+     onContextMenu?: MouseEventHandler<HTMLButtonElement>;
 }
 
-export type getButtonItem = (message: Message) => ButtonItem | null;
-
-export const buttons = new Map<string, getButtonItem>();
-
+export type getButtonItem = (message: Message) => ButtonItem | null
+export const buttons = new Map<string, getButtonItem>()
 export function addButton(
-    identifier: string,
-    item: getButtonItem,
+     identifier: string,
+     item: getButtonItem,
 ) {
-    buttons.set(identifier, item);
+     buttons.set(identifier, item)
 }
 
 export function removeButton(identifier: string) {
-    buttons.delete(identifier);
+     buttons.delete(identifier)
 }
 
 export function _buildPopoverElements(
-    Component: React.ComponentType<ButtonItem>,
-    message: Message
+     Component: React.ComponentType<ButtonItem>,
+     message: Message
 ) {
-    const items: React.ReactNode[] = [];
+     const items: React.ReactNode[] = []
+     for (const [identifier, getItem] of buttons.entries()) {
+          try {
+               const item = getItem(message)
+               if (item) {
+                    item.key ??= identifier
+                    items.push(
+                         <ErrorBoundary noop>
+                              <Component {...item} />
+                         </ErrorBoundary>
+                    )
+               }
+          } catch (err) {
+               logger.error(`[${identifier}]`, err)
+          }
+     }
 
-    for (const [identifier, getItem] of buttons.entries()) {
-        try {
-            const item = getItem(message);
-            if (item) {
-                item.key ??= identifier;
-                items.push(
-                    <ErrorBoundary noop>
-                        <Component {...item} />
-                    </ErrorBoundary>
-                );
-            }
-        } catch (err) {
-            logger.error(`[${identifier}]`, err);
-        }
-    }
-
-    return <>{items}</>;
+     return <>{items}</>
 }

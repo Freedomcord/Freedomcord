@@ -16,18 +16,17 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { definePluginSettings } from "@api/Settings";
-import { OptionType } from "@utils/types";
-
+import {definePluginSettings} from '@api/Settings'
+import {OptionType} from '@utils/types'
 export const settings = definePluginSettings({
-    noiseSuppression: {
-        type: OptionType.BOOLEAN,
-        description: "Noise Suppression",
-        default: true,
-    },
-    echoCancellation: {
-        type: OptionType.BOOLEAN,
-        description: "Echo Cancellation",
-        default: true,
-    },
-});
+     noiseSuppression: {
+          type: OptionType.BOOLEAN,
+          description: 'Noise Suppression',
+          default: true,
+     },
+     echoCancellation: {
+          type: OptionType.BOOLEAN,
+          description: 'Echo Cancellation',
+          default: true,
+     },
+})

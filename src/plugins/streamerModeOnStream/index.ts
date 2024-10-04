@@ -16,30 +16,28 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Devs } from "@utils/constants";
-import definePlugin from "@utils/types";
-import { FluxDispatcher, UserStore } from "@webpack/common";
-
+import {Devs} from '@utils/constants'
+import definePlugin from '@utils/types'
+import {FluxDispatcher, UserStore} from '@webpack/common'
 interface StreamEvent {
-    streamKey: string;
+     streamKey: string;
 }
 
-function toggleStreamerMode({ streamKey }: StreamEvent, value: boolean) {
-    if (!streamKey.endsWith(UserStore.getCurrentUser().id)) return;
-
-    FluxDispatcher.dispatch({
-        type: "STREAMER_MODE_UPDATE",
-        key: "enabled",
-        value
-    });
+function toggleStreamerMode({streamKey}: StreamEvent, value: boolean) {
+     if (!streamKey.endsWith(UserStore.getCurrentUser().id)) return
+     FluxDispatcher.dispatch({
+          type: 'STREAMER_MODE_UPDATE',
+          key: 'enabled',
+          value
+     })
 }
 
 export default definePlugin({
-    name: "StreamerModeOnStream",
-    description: "Automatically enables streamer mode when you start streaming in Discord",
-    authors: [Devs.Kodarru],
-    flux: {
-        STREAM_CREATE: d => toggleStreamerMode(d, true),
-        STREAM_DELETE: d => toggleStreamerMode(d, false)
-    }
-});
+     name: 'StreamerModeOnStream',
+     description: 'Automatically enables streamer mode when you start streaming in Discord',
+     authors: [Devs.Kodarru],
+     flux: {
+          STREAM_CREATE: (d) => toggleStreamerMode(d, true),
+          STREAM_DELETE: (d) => toggleStreamerMode(d, false)
+     }
+})

@@ -16,8 +16,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import PluginSettings from "@components/PluginSettings";
-
-import { wrapTab } from "./shared";
-
-export default wrapTab(PluginSettings, "Plugins");
+import PluginSettings from '@components/PluginSettings'
+import {wrapTab} from './shared'
+export default wrapTab(PluginSettings, 'Plugins')

@@ -17,15 +17,15 @@
 */
 
 export function relaunch() {
-    if (IS_DISCORD_DESKTOP)
-        window.DiscordNative.app.relaunch();
-    else
-        window.VesktopNative.app.relaunch();
+     if (IS_DISCORD_DESKTOP)
+          window.DiscordNative.app.relaunch()
+     else
+          window.VesktopNative.app.relaunch()
 }
 
 export function showItemInFolder(path: string) {
-    if (IS_DISCORD_DESKTOP)
-        window.DiscordNative.fileManager.showItemInFolder(path);
-    else
-        window.VesktopNative.fileManager.showItemInFolder(path);
+     if (IS_DISCORD_DESKTOP)
+          window.DiscordNative.fileManager.showItemInFolder(path)
+     else
+          window.VesktopNative.fileManager.showItemInFolder(path)
 }

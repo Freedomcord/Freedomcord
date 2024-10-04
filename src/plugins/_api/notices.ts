@@ -16,27 +16,26 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Devs } from "@utils/constants";
-import definePlugin from "@utils/types";
-
+import {Devs} from '@utils/constants'
+import definePlugin from '@utils/types'
 export default definePlugin({
-    name: "NoticesAPI",
-    description: "Fixes notices being automatically dismissed",
-    authors: [Devs.Ven],
-    required: true,
-    patches: [
-        {
-            find: '"NoticeStore"',
-            replacement: [
-                {
-                    match: /(?<=!1;)\i=null;(?=.{0,80}getPremiumSubscription\(\))/g,
-                    replace: "if(Vencord.Api.Notices.currentNotice)return false;$&"
-                },
-                {
-                    match: /(?<=function (\i)\(\i\){)return null!=(\i)(?=.*NOTICE_DISMISS:\1)/,
-                    replace: "if($2.id==\"VencordNotice\")return($2=null,Vencord.Api.Notices.nextNotice(),true);$&"
-                }
-            ]
-        }
-    ],
-});
+     name: 'NoticesAPI',
+     description: 'Fixes notices being automatically dismissed',
+     authors: [Devs.Ven],
+     required: true,
+     patches: [
+          {
+               find: '"NoticeStore"',
+               replacement: [
+                    {
+                         match: /(?<=!1;)\i=null;(?=.{0,80}getPremiumSubscription\(\))/g,
+                         replace: 'if(Vencord.Api.Notices.currentNotice)return false;$&'
+                    },
+                    {
+                         match: /(?<=function (\i)\(\i\){)return null!=(\i)(?=.*NOTICE_DISMISS:\1)/,
+                         replace: 'if($2.id=="VencordNotice")return($2=null,Vencord.Api.Notices.nextNotice(),true);$&'
+                    }
+               ]
+          }
+     ],
+})

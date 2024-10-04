@@ -17,34 +17,33 @@
 */
 
 export class ChangeList<T>{
-    private set = new Set<T>();
+     private set = new Set<T>()
+     public get changeCount() {
+          return this.set.size
+     }
 
-    public get changeCount() {
-        return this.set.size;
-    }
+     public get hasChanges() {
+          return this.changeCount > 0
+     }
 
-    public get hasChanges() {
-        return this.changeCount > 0;
-    }
+     public handleChange(item: T) {
+          if (!this.set.delete(item))
+               this.set.add(item)
+     }
 
-    public handleChange(item: T) {
-        if (!this.set.delete(item))
-            this.set.add(item);
-    }
+     public add(item: T) {
+          return this.set.add(item)
+     }
 
-    public add(item: T) {
-        return this.set.add(item);
-    }
+     public remove(item: T) {
+          return this.set.delete(item)
+     }
 
-    public remove(item: T) {
-        return this.set.delete(item);
-    }
+     public getChanges() {
+          return this.set.values()
+     }
 
-    public getChanges() {
-        return this.set.values();
-    }
-
-    public map<R>(mapper: (v: T, idx: number, arr: T[]) => R): R[] {
-        return [...this.getChanges()].map(mapper);
-    }
+     public map<R>(mapper: (v: T, idx: number, arr: T[]) => R): R[] {
+          return [...this.getChanges()].map(mapper)
+     }
 }
